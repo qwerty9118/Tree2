@@ -1,49 +1,242 @@
 
-%point = [0, 0, 0];
+main;
 
-
-origin = [0, 0, 0];
-
-currentChain;
-
-totalBranches;
-
-branches;
-
-
-
-function runTree()
-	
-	
-	
+function main
+    
+    %point = [0, 0, 0];
+    
+    
+    % PseudoGlobal replacement:
+    
+    % General
+    screen; % Screen characters.
+    screenColour; % Screen colours. The "2" is foreground, background in that order.
+    screenWidth;
+    screenHeight;
+    origin = [0, 0, 0]; % Origin of tree on screen
+    barkNum = 0; % The bark palette used.
+    leafNum = 0; % The leaf palette used.
+    
+    currentChain = [SettingsPoint, SettingsPoint, SettingsPoint, SettingsPoint, SettingsPoint, SettingsPoint, SettingsPoint, SettingsPoint, SettingsPoint, SettingsPoint]; % List of settings for each segment of branch.
+    
+    totalBranches = 0; % Counter for the number of branches, for indexing purposes.
+    
+    branches = []; % Pointer to an array of Branch-es.
+    
+    % Colours
+    reset;
+    barkPalettes;
+    leafPalettes;
+    bold;
+    faint;
+    italic;
+    underline;
+    doubleUnderline;
+    
+    % End of PseudoGlobal
+    
+    
+    
+    runTree();
+    
+    
+    
+    
+    
+    function runTree()
+        
+        maxBranchChain = 6;
+        
+        branchLength = 0;
+        
+        angleFromPrevBranch = 1;
+        
+        angleFromGround = 2;
+        
+        childAmount = 0;
+        
+        childLocations = 0;
+        
+        branchColour = 0;
+        leafColour = 0;
+        
+        
+        
+        
+        origin = [0, 0, 0];
+        
+        currentChain = [];
+        
+        branches = [];
+        
+        
+        
+        
+        generateSettingsList(currentChain, maxBranchChain, branchLength, angleFromPrevBranch, angleFromGround, childAmount, childLocations);
+        
+        barkNum = branchColour;
+        leafNum = leafColour;
+        
+        
+        
+        originBranch = Branch;
+        originBranch.parent = 0;
+        originBranch.length = 0;
+        originBranch.angleFromParent = 0;
+        originBranch.angleFromGround = 0;
+        originBranch.childCount = 1;
+        originBranch.children = [];
+        originBranch.pointsAlongBranch = [];
+        
+        
+        
+        generateBranch(originBranch.parent, origin, maxBranchChain);
+        
+        
+        
+        % DISPLAY TREE HERE!
+        
+        
+        
+    end
+    
+    
+    
+    
+    
+    
+    function output = getInput(maxOpts)
+        output = 0;
+    end
+    
+    
+    function newBranch = generateBranch(parent, start, maxBranchChain)
+        
+        totalBranches = totalBranches + 1;
+        branchNumber = totalBranches;
+        
+        
+        branchSettings = currentChain(maxBranchChain);
+        
+        
+        newBranch = Branch;
+        
+        newBranch.parent = parent;
+        newBranch.length = branchSettings.currentBranchLength + randVal(3) - 1;
+        angles = genAngles(maxBranchChain, parent, branchNumber);
+        newBranch.angleFromParent = angles(1);
+        newBranch.angleFromGround = angles(2);
+        newBranch.childCount = branchSettings.currentChildAmount;
+        
+        newBranch = genPointsAlongBranch(newBranch, maxBranchChain, start);
+        
+        branches(end+1) = newBranch;
+        
+        writeBranchToScreen(newBranch, start) % <- probably don't need? Maybe?
+        % Actually, this might indeed be more efficient to write the graph lines to screen here than to go through them again at the end...
+        
+        if maxBranchChain > 0
+            for i = 1:newBranch.childCount
+                generateBranch(branchNumber, newBranch.pointsAlongBranch(i), maxBranchChain - 1);
+            end
+        else
+            for i = 1:newBranch.childCount
+                % Make leaves here!
+            end
+        end
+        
+        % Return?
+    end
+    
+    
+    function writeBranchToScreen(br, start)
+        % yeah
+    end
+    
+    function newBranch = genPointsAlongBranch(newBranch, maxBranchChain, start)
+        
+        newBranch.pointsAlongBranch(1) = getEndpoint(newBranch, start, newBranch.length);
+        
+        for i = 1:newBranch.childCount
+            newBranch.pointsAlongBranch(i+1) = genPointAlongBranch(maxBranchChain, newBranch, start, newBranch.length);
+        end
+        
+    end
+    
+    
+    function generateSettingsList(currentChain, maxBranchLength, angleFromPrevBranch, angleFromPrevBranchHoriz, angleFromGround, childAmount, childLocations)
+        
+        periodicBL = 0;
+        periodicAFPB = 0;
+        periodicAFG = 0;
+        periodicCA = 0;
+        periodicCL = 0;
+        
+        previousBL = 0;
+        previousAFPB = 0;
+        previousAFG = 0;
+        previousCA = 0;
+        previousCL = 0;
+        
+        lastBL = 0;
+        lastAFPB = 0;
+        lastCA = 0;
+        lastCL = 0;
+        
+        for i = 10:1
+            
+            newSP = SettingsPoint;
+            
+            
+            
+            currentChain(i) = newSP;
+            
+        end
+        
+    end
+    
+    
+    function length = genLength(i, branchLength, periodic, previous, last)
+    end
+    
+    function angle = genAngleFromPrevBranch(i, angleFromPrevBranch, periodic, previous, last)
+    end
+    
+    function angle = genAngleFromGround(i, angleFromGround, periodic, previous, last)
+    end
+    
+    function count = genChildCount(i, childAmount, periodic, previous, last)
+    end
+    
+    function positions = genChildLocations(i, childLocations, periodic, previous, last)
+    end
+    
+    
+    % Generates both angleFromParent and angleFromGround, as they partially depend on eachother.
+    function angles = genAngles(maxBranchChain, parent, branchNumber)
+    end
+    
+    function point = genPointAlongBranch(maxBranchChain, br, start, length)
+    end
+    
+    function point = getEndpoint(br, start, length)
+    end
+    
+    
+    function val = randVal(range) % Generates a random value within a range.
+    end
+    function angle = randAngle(range) % Generates an angle within a range of plus-or-minus "range"
+    end
+    function angle = randAngleAvg(range1, range2) % Generates an angle that is the average of randAngle(range1) & randAngle(range2)
+    end
+    function angle = randAngleAvgAvg(range) % Generates an angle within a range of plus-or-minus "range", that is weighted with a rough bell curve, effectively.
+    end
+    
+    
+    
+    
+    
+    
+    
+    
 end
-
-
-
-
-
-
-function output = getInput(maxOpts)
-end
-
-function newBranch = generateBranch(parent, start, maxBranchChain)
-end
-
-function writeBranchToScreen(br, start)
-end
-
-function genPointsAlongBranch(newBranch, maxBranchChain, start)
-end
-
-
-
-
-
-
-
-
-
-runTree();
-
-
-

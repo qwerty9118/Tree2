@@ -9,7 +9,7 @@ classdef Branch
 		angleFromParent
 		angleFromGround
 		
-		angleFromParentHoriz
+		%angleFromParentHoriz
 		
 		childCount
 		children = []
