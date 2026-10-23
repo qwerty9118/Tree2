@@ -5,6 +5,7 @@ classdef SettingsPoint
 	properties
 		currentBranchLength
 		currentAngleFromPrevBranch
+		currentAngleFromPrevBranchHoriz
 		currentAngleFromGround
 		currentChildAmount
 		currentChildLocations

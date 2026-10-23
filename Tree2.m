@@ -50,6 +50,8 @@ function main
         branchLength = 0;
         
         angleFromPrevBranch = 1;
+		
+		angleFromPrevBranchHoriz = 1;
         
         angleFromGround = 2;
         
@@ -72,7 +74,7 @@ function main
         
         
         
-        generateSettingsList(currentChain, maxBranchChain, branchLength, angleFromPrevBranch, angleFromGround, childAmount, childLocations);
+        generateSettingsList(currentChain, maxBranchChain, branchLength, angleFromPrevBranch, angleFromPrevBranchHoriz, angleFromGround, childAmount, childLocations);
         
         barkNum = branchColour;
         leafNum = leafColour;
@@ -164,7 +166,7 @@ function main
     end
     
     
-    function generateSettingsList(currentChain, maxBranchLength, angleFromPrevBranch, angleFromPrevBranchHoriz, angleFromGround, childAmount, childLocations)
+	function generateSettingsList(currentChain, maxBranchChain, branchLength, angleFromPrevBranch, angleFromPrevBranchHoriz, angleFromGround, childAmount, childLocations)
         
         periodicBL = 0;
         periodicAFPB = 0;
@@ -187,7 +189,13 @@ function main
             
             newSP = SettingsPoint;
             
-            
+			newSP.currentBranchLength = genLength(i, branchLength, periodicBL, previousBL, lastBL);
+			newSP.currentAngleFromPrevBranch = genAngleFromPrevBranch(i, angleFromPrevBranch, periodicAFPB, previousAFPB, lastAFPB);
+			%newSP.currentAngleFromPrevBranchHoriz = genAngleFromPrevBranchHoriz(i, angleFromPrevBranchHoriz, periodicAFPBH, previousAFPBH, lastAFPBH);
+			newSP.currentAngleFromPrevBranchHoriz = 0;
+			newSP.currentAngleFromGround = genAngleFromGround(i, angleFromGround, periodicAFG, previousAFG, lastAFG);
+			newSP.currentChildAmount = genChildCount(i, childAmount, periodicCA, previousCA, lastCA);
+            newSP.currentChildLocations = genChildLocations(i, childLocations, periodicCL, previousCL, lastCL);
             
             currentChain(i) = newSP;
             
