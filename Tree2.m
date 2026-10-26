@@ -304,6 +304,11 @@ function main
 			otherwise
 		end
 		
+		previous = angle;
+		
+		if i == 9
+			angle =
+		
     end
     
     function angle = genAngleFromGround(i, angleFromGround, periodic, previous, last)
