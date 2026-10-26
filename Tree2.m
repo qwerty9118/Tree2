@@ -166,6 +166,9 @@ function main
     end
     
     
+	
+	
+	
 	function generateSettingsList(currentChain, maxBranchChain, branchLength, angleFromPrevBranch, angleFromPrevBranchHoriz, angleFromGround, childAmount, childLocations)
         
         periodicBL = 0;
@@ -204,10 +207,103 @@ function main
     end
     
     
+	% int genLength(PseudoGlobal * pg, int maxBranchChain) {
+	% i: the branch we're on
+	% branchLength: the setting for the length of the branches.
+	% periodic: the counter for changing every few branches.
+	% previous: the previous branches output.
     function length = genLength(i, branchLength, periodic, previous, last)
+		
+		% 0: all random, 1: based off first branch, 2: changes every few branches, 3: changes gradually from first to last branch
+		switch branchLength
+			case 0
+				length = randVal(5) + 3;
+			case 1
+				if i == 9
+					length = randVal(5) + 3;
+				else
+					length = previous;
+				end
+			case 2
+				if periodic <= 0
+					periodic = randVal(6) + 1;
+					length = randVal(5) + 3;
+				else
+					length = previous;
+					periodic = periodic - 1;
+				end
+			case 3
+				if periodic == 0
+					length = randVal(5) + 3;
+					last = randVal(5) + 3;
+					periodic = length;
+				else
+					length = ((periodic * i) + (last * (10 - i))) / 10;
+				end
+			otherwise
+				length = 1;
+		end
+		
+		if length < 1
+			length = 1;
+		end
+		
+		previous = length;
+		
+		if i > 7
+			length = randVal(5) + 10;
+		end
+		
     end
     
+	% Generates angleFromParent setting.
     function angle = genAngleFromPrevBranch(i, angleFromPrevBranch, periodic, previous, last)
+		
+		angleSpread = 30;
+		
+		% First branch (the trunk) should be straight up.
+		if i == 9
+			angle = 0;
+			return;
+		end
+		
+		angle = 0;
+		
+		% 0: all random, 1: based off first sub-branch, 2: based off of previous branch, 3: changes every few branches, 4: changes gradually from first to last branch
+		switch angleFromPrevBranch
+			case 0
+				angle = randAngle(angleSpread);
+			case 1
+				if i == 8
+					angle = randAngle(angleSpread);
+				else
+					angle = previous;
+				end
+			case 2
+				if i == 8
+					angle = randAngle(angleSpread);
+				else
+					angle = previous + randAngleAvg(10, 10);
+				end
+			case 3
+				if periodic <= 0
+					periodic = randVal(6) + 1;
+					angle = randAngle(angleSpread);
+				else
+					angle = previous;
+					periodic = periodic - 1;
+				end
+			case 4
+				if periodic == 0
+					angle = randAngle(angleSpread);
+					last = randAngle(angleSpread);
+					periodic = angle;
+				else
+					angle = ((periodic * i) + (last * (10 - i))) / 10;
+				end
+			otherwise
+		end
+		
     end
     
     function angle = genAngleFromGround(i, angleFromGround, periodic, previous, last)
