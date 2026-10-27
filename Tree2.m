@@ -74,7 +74,7 @@ function main
         
         
         
-        generateSettingsList(currentChain, maxBranchChain, branchLength, angleFromPrevBranch, angleFromPrevBranchHoriz, angleFromGround, childAmount, childLocations);
+        currentChain = generateSettingsList(currentChain, maxBranchChain, branchLength, angleFromPrevBranch, angleFromPrevBranchHoriz, angleFromGround, childAmount, childLocations);
 		
 		
 		
@@ -124,11 +124,12 @@ function main
         
         branchSettings = currentChain(maxBranchChain);
         
+		currentChain(2)
         
         newBranch = Branch;
         
         newBranch.parent = parent;
-		disp(branchSettings)
+		%disp(branchSettings)
         newBranch.length = branchSettings.currentBranchLength + randVal(3) - 1;
         angles = genAngles(maxBranchChain, parent, branchNumber);
         newBranch.angleFromParent = angles(1);
@@ -139,7 +140,7 @@ function main
         
         branches(end+1) = newBranch;
         
-        writeBranchToScreen(newBranch, start) % <- probably don't need? Maybe?
+        writeBranchToScreen(newBranch, start); % <- probably don't need? Maybe?
         % Actually, this might indeed be more efficient to write the graph lines to screen here than to go through them again at the end...
         
         if maxBranchChain > 0
@@ -162,11 +163,16 @@ function main
     
     function newBranch = genPointsAlongBranch(newBranch, maxBranchChain, start)
 		
-        newBranch.pointsAlongBranch(1) = getEndpoint(newBranch, start, newBranch.length);
+		getEndpoint(newBranch, start, newBranch.length)
+		pointsAlongBranch = [];
+		
+		pointsAlongBranch(end+1) = getEndpoint(newBranch, start, newBranch.length);
         
         for i = 1:newBranch.childCount
-            newBranch.pointsAlongBranch(i+1) = genPointAlongBranch(maxBranchChain, newBranch, start, newBranch.length);
-        end
+            pointsAlongBranch(end+1) = genPointAlongBranch(maxBranchChain, newBranch, start, newBranch.length);
+		end
+		
+		newBranch.pointsAlongBranch = pointsAlongBranch;
         
     end
     
@@ -174,7 +180,7 @@ function main
 	
 	
 	
-	function generateSettingsList(currentChain, maxBranchChain, branchLength, angleFromPrevBranch, angleFromPrevBranchHoriz, angleFromGround, childAmount, childLocations)
+	function currentChain1 = generateSettingsList(currentChain, maxBranchChain, branchLength, angleFromPrevBranch, angleFromPrevBranchHoriz, angleFromGround, childAmount, childLocations)
         
         periodicBL = 0;
         periodicAFPB = 0;
@@ -206,9 +212,13 @@ function main
 			newSP.currentChildAmount = genChildCount(i, childAmount, periodicCA, previousCA, lastCA);
             newSP.currentChildLocations = genChildLocations(i, childLocations, periodicCL, previousCL, lastCL);
 			
+			% newSP.currentBranchLength;
+			
             currentChain(i) = newSP;
             
-        end
+		end
+		
+		currentChain1 = currentChain;
         
     end
     
