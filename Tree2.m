@@ -220,9 +220,7 @@ function main
 		
 		currentChain1 = currentChain;
         
-    end
-    
-	% HELLO THERE THIS IS A TEST COMMIT
+	end
     
 	% int genLength(PseudoGlobal * pg, int maxBranchChain) {
 	% i: the branch we're on
